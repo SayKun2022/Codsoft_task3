@@ -1,14 +1,11 @@
-#include <iostream>
-#include <limits>
-#include <algorithm>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 
 struct Student {
     char name[100];
-    char grade[3]; // A+ (2 characters) + null terminator
+    char grade[3];
 };
 
-// Function to convert letter grade to its corresponding numeric value
 double convertGradeToNumeric(const char* grade) {
     if (strcmp(grade, "A+") == 0) return 4.3;
     if (strcmp(grade, "A") == 0) return 4.0;
@@ -25,34 +22,38 @@ int main() {
     printf("Enter the number of students: ");
     scanf("%d", &numStudents);
 
-    Student students[100];
+    struct Student students[100];
 
     for (int i = 0; i < numStudents; ++i) {
         printf("Enter the name of student %d: ", i + 1);
         scanf("%s", students[i].name);
+
         printf("Enter the grade of student %d (A+, A, B+, B, C, D, or E): ", i + 1);
         scanf("%s", students[i].grade);
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        while (getchar() != '\n'); // Clear input buffer
     }
 
-    // Calculate the average grade and find the highest and lowest grades
     double totalGrade = 0.0;
     double highestGrade = 0.0;
-    double lowestGrade = 4.3; // Assuming the maximum possible grade is 4.3
+    double lowestGrade = 4.3;
+
     for (int i = 0; i < numStudents; ++i) {
         double numericGrade = convertGradeToNumeric(students[i].grade);
         if (numericGrade >= 0.0) {
             totalGrade += numericGrade;
-            highestGrade = std::max(highestGrade, numericGrade);
-            lowestGrade = std::min(lowestGrade, numericGrade);
+            if (numericGrade > highestGrade) {
+                highestGrade = numericGrade;
+            }
+            if (numericGrade < lowestGrade) {
+                lowestGrade = numericGrade;
+            }
         } else {
-            std::cout << "Invalid grade entered for student " << i + 1 << std::endl;
-            return 1; // Exit the program with an error code
+            printf("Invalid grade entered for student %d\n", i + 1);
+            return 1;
         }
     }
     double averageGrade = totalGrade / numStudents;
 
-    // Display the results
     printf("\nStudent Grades Summary:\n");
     printf("----------------------\n");
     for (int i = 0; i < numStudents; ++i) {
